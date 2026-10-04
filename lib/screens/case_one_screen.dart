@@ -22,7 +22,7 @@ import '../theme/app_colors.dart';
 class CaseOneScreen extends StatelessWidget {
   const CaseOneScreen({super.key});
 
-  static const bool _usarCaminoProblematico = false;
+  static const bool _usarCaminoProblematico = true;
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,7 @@ import '../models/profiler_case.dart';
 import '../theme/app_colors.dart';
 import '../widgets/case_card.dart';
 import 'case_one_screen.dart';
+import 'case_two_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -43,13 +44,7 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return CaseCard(
                       profilerCase: profilerCases[index],
-                      onTap: index == 0
-                          ? () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => const CaseOneScreen(),
-                                ),
-                              )
-                          : null,
+                      onTap: _navegateRegardingCase(context, index),
                     );
                   },
                 ),
@@ -59,5 +54,17 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  VoidCallback? _navegateRegardingCase(BuildContext context, int index) {
+    final pantallas = <int, WidgetBuilder>{
+      0: (_) => const CaseOneScreen(),
+      1: (_) => const CaseTwoScreen(),
+    };
+    final builder = pantallas[index];
+    if (builder == null) return null;
+    return () => Navigator.of(context).push(
+          MaterialPageRoute(builder: builder),
+        );
   }
 }
