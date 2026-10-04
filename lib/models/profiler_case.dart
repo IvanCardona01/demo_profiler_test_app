@@ -16,10 +16,10 @@ const List<ProfilerCase> profilerCases = [
   ),
   ProfilerCase(
     title: 'Caso 3',
-    description: 'Cambio de estado sospechoso',
+    description: 'Memoria creciente',
   ),
   ProfilerCase(
     title: 'Caso 4',
-    description: 'Memoria creciente',
+    description: 'Cambio de estado sospechoso',
   ),
 ];

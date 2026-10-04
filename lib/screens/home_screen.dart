@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:profiler_app/screens/case_three_screen.dart';
 
 import '../models/profiler_case.dart';
 import '../theme/app_colors.dart';
@@ -60,6 +61,7 @@ class HomeScreen extends StatelessWidget {
     final pantallas = <int, WidgetBuilder>{
       0: (_) => const CaseOneScreen(),
       1: (_) => const CaseTwoScreen(),
+      2: (_) => const CaseThreeScreen(),
     };
     final builder = pantallas[index];
     if (builder == null) return null;
