@@ -28,23 +28,26 @@ class CaseOneScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final products = buildSampleProducts();
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F3FA),
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.white,
-        title: const Text('Caso 1'),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _CaseDescription(),
-          Expanded(
-            child: _usarCaminoProblematico
-                ? _buildListaProblematica(products)
-                : _buildListaOptimizada(products),
-          ),
-        ],
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF5F3FA),
+        appBar: AppBar(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.white,
+          title: const Text('Caso 1'),
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _CaseDescription(),
+            Expanded(
+              child: _usarCaminoProblematico
+                  ? _buildListaProblematica(products)
+                  : _buildListaOptimizada(products),
+            ),
+          ],
+        ),
       ),
     );
   }

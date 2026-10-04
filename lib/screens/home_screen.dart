@@ -36,25 +36,24 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 28),
-              // Expanded(
-              //   child: ListView.separated(
-              //     itemCount: profilerCases.length,
-              //     separatorBuilder: (_, _) => const SizedBox(height: 16),
-              //     itemBuilder: (context, index) {
-              //       return CaseCard(
-              //         profilerCase: profilerCases[index],
-              //         // Solo el Caso 1 tiene navegación por ahora.
-              //         onTap: index == 0
-              //             ? () => Navigator.of(context).push(
-              //                   MaterialPageRoute(
-              //                     builder: (_) => const CaseOneScreen(),
-              //                   ),
-              //                 )
-              //             : null,
-              //       );
-              //     },
-              //   ),
-              // ),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: profilerCases.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 16),
+                  itemBuilder: (context, index) {
+                    return CaseCard(
+                      profilerCase: profilerCases[index],
+                      onTap: index == 0
+                          ? () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const CaseOneScreen(),
+                                ),
+                              )
+                          : null,
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
