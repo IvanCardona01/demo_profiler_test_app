@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/product.dart';
 import '../theme/app_colors.dart';
+import '../widgets/path_switch.dart';
 
 /// Caso 1: Scroll o animación con tirones.
 ///
@@ -19,10 +20,16 @@ import '../theme/app_colors.dart';
 /// Cómo se soluciona: usar ListView.builder para construir solo los elementos
 /// visibles de forma perezosa y mover el cálculo pesado fuera del build (por
 /// ejemplo precalculándolo o en un isolate), liberando el hilo de UI.
-class CaseOneScreen extends StatelessWidget {
+class CaseOneScreen extends StatefulWidget {
   const CaseOneScreen({super.key});
 
-  static const bool _usarCaminoProblematico = true;
+  @override
+  State<CaseOneScreen> createState() => _CaseOneScreenState();
+}
+
+class _CaseOneScreenState extends State<CaseOneScreen> {
+  
+  bool _usarCaminoProblematico = true;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +43,13 @@ class CaseOneScreen extends StatelessWidget {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.white,
           title: const Text('Caso 1'),
+          actions: [
+            PathSwitch(
+              problematico: _usarCaminoProblematico,
+              onChanged: (valor) =>
+                  setState(() => _usarCaminoProblematico = valor),
+            ),
+          ],
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

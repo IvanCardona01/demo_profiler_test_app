@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../widgets/path_switch.dart';
 
 /// Caso 2: Interacción costosa.
 ///
@@ -25,7 +26,8 @@ class CaseTwoScreen extends StatefulWidget {
 }
 
 class _CaseTwoScreenState extends State<CaseTwoScreen> {
-  static const bool _usarCaminoProblematico = false;
+  
+  bool _usarCaminoProblematico = true;
 
   bool _cargando = false;
   double _resultado = 0;
@@ -38,6 +40,13 @@ class _CaseTwoScreenState extends State<CaseTwoScreen> {
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,
         title: const Text('Caso 2'),
+        actions: [
+          PathSwitch(
+            problematico: _usarCaminoProblematico,
+            onChanged: (valor) =>
+                setState(() => _usarCaminoProblematico = valor),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

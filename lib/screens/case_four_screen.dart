@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../widgets/path_switch.dart';
 
-/// Caso 3: Memoria creciente.
+/// Caso 4: Memoria creciente.
 ///
 /// Sintoma: Cada vez que se entra y se sale de la pantalla la app ocupa más
 /// memoria y nunca la devuelve, aunque la pantalla ya no esté en uso.
@@ -25,15 +26,16 @@ class LeakedProbe {
   LeakedProbe(this.visit) : payload = List<int>.filled(1024 * 1024, 0);
 }
 
-class CaseThreeScreen extends StatefulWidget {
-  const CaseThreeScreen({super.key});
+class CaseFourScreen extends StatefulWidget {
+  const CaseFourScreen({super.key});
 
   @override
-  State<CaseThreeScreen> createState() => _CaseThreeScreenState();
+  State<CaseFourScreen> createState() => _CaseFourScreenState();
 }
 
-class _CaseThreeScreenState extends State<CaseThreeScreen> {
-  static const bool _usarCaminoProblematico = true;
+class _CaseFourScreenState extends State<CaseFourScreen> {
+  
+  bool _usarCaminoProblematico = true;
 
   static int visitCount = 0;
 
@@ -68,7 +70,14 @@ class _CaseThreeScreenState extends State<CaseThreeScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,
-        title: const Text('Caso 3'),
+        title: const Text('Caso 4'),
+        actions: [
+          PathSwitch(
+            problematico: _usarCaminoProblematico,
+            onChanged: (valor) =>
+                setState(() => _usarCaminoProblematico = valor),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,6 +99,14 @@ class _CaseThreeScreenState extends State<CaseThreeScreen> {
                       fontSize: 48,
                       fontWeight: FontWeight.w800,
                       color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    '${_probe.payload.length} datos retenidos en esta visita',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.black.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
