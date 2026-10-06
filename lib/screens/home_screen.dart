@@ -5,6 +5,7 @@ import '../models/profiler_case.dart';
 import '../theme/app_colors.dart';
 import '../widgets/case_card.dart';
 import 'case_one_screen.dart';
+import 'case_three_screen.dart';
 import 'case_two_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -61,6 +62,7 @@ class HomeScreen extends StatelessWidget {
     final pantallas = <int, WidgetBuilder>{
       0: (_) => const CaseOneScreen(),
       1: (_) => const CaseTwoScreen(),
+      2: (_) => const CaseThreeScreen(),
       3: (_) => const CaseFourScreen(),
     };
     final builder = pantallas[index];
