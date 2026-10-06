@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
     final pantallas = <int, WidgetBuilder>{
       0: (_) => const CaseOneScreen(),
       1: (_) => const CaseTwoScreen(),
-      2: (_) => const CaseThreeScreen(),
+      3: (_) => const CaseThreeScreen(),
     };
     final builder = pantallas[index];
     if (builder == null) return null;

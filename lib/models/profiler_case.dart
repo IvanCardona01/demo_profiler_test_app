@@ -16,6 +16,10 @@ const List<ProfilerCase> profilerCases = [
   ),
   ProfilerCase(
     title: 'Caso 3',
+    description: 'Seguimiento de rebuilds',
+  ),
+  ProfilerCase(
+    title: 'Caso 4',
     description: 'Memoria creciente',
   ),
 ];
