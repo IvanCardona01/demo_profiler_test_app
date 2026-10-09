@@ -199,7 +199,7 @@ class _WidgetCostoso extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Text(
-        'Widget costoso (marca $acumulado)',
+        'Widget costoso',
         style: const TextStyle(
           fontWeight: FontWeight.w600,
           color: AppColors.black,
