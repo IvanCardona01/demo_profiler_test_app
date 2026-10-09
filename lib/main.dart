@@ -20,6 +20,7 @@ class ProfilerApp extends StatelessWidget {
           seedColor: AppColors.primary,
           primary: AppColors.primary,
         ),
+        scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
       ),
       home: const HomeScreen(),

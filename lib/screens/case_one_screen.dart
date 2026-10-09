@@ -38,7 +38,7 @@ class _CaseOneScreenState extends State<CaseOneScreen> {
     return SafeArea(
       top: false,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF5F3FA),
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.white,

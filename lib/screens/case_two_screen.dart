@@ -30,7 +30,7 @@ class _CaseTwoScreenState extends State<CaseTwoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F3FA),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,

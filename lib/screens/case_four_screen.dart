@@ -66,7 +66,7 @@ class _CaseFourScreenState extends State<CaseFourScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F3FA),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,
