@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/product.dart';
 import '../theme/app_colors.dart';
-import '../widgets/path_switch.dart';
+import '../widgets/case_scaffold.dart';
 
 /// Caso 1: Scroll o animación con tirones.
 ///
@@ -35,34 +35,17 @@ class _CaseOneScreenState extends State<CaseOneScreen> {
   Widget build(BuildContext context) {
     final products = buildSampleProducts();
 
-    return SafeArea(
-      top: false,
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.white,
-          title: const Text('Caso 1'),
-          actions: [
-            PathSwitch(
-              problematico: _usarCaminoProblematico,
-              onChanged: (valor) =>
-                  setState(() => _usarCaminoProblematico = valor),
-            ),
-          ],
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _CaseDescription(),
-            Expanded(
-              child: _usarCaminoProblematico
-                  ? _buildListaProblematica(products)
-                  : _buildListaOptimizada(products),
-            ),
-          ],
-        ),
-      ),
+    return CaseScaffold(
+      caseNumber: 1,
+      title: 'Scroll con tirones',
+      description:
+          'La lista se traba al hacer scroll lo que hace que la experiencia sea poco fluida',
+      problematico: _usarCaminoProblematico,
+      onPathChanged: (valor) =>
+          setState(() => _usarCaminoProblematico = valor),
+      child: _usarCaminoProblematico
+          ? _buildListaProblematica(products)
+          : _buildListaOptimizada(products),
     );
   }
 
@@ -128,41 +111,6 @@ class _CaseOneScreenState extends State<CaseOneScreen> {
       result += sqrt((seed + i) * 1.0) * sin(i.toDouble());
     }
     return result;
-  }
-}
-
-class _CaseDescription extends StatelessWidget {
-  const _CaseDescription();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      color: AppColors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Scroll con tirones',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'La lista se traba al hacer scroll lo que hace que la experiencia sea poco fluida',
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: AppColors.black.withValues(alpha: 0.6),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

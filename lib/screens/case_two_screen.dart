@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
-import '../widgets/path_switch.dart';
+import '../widgets/case_scaffold.dart';
 
 /// Caso 2: Seguimiento de rebuilds.
 ///
@@ -29,31 +29,17 @@ class _CaseTwoScreenState extends State<CaseTwoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.white,
-        title: const Text('Caso 2'),
-        actions: [
-          PathSwitch(
-            problematico: _usarCaminoProblematico,
-            onChanged: (valor) =>
-                setState(() => _usarCaminoProblematico = valor),
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _CaseDescription(),
-          Expanded(
-            child: _usarCaminoProblematico
-                ? const _ConteoProblematico()
-                : const _ConteoOptimizado(),
-          ),
-        ],
-      ),
+    return CaseScaffold(
+      caseNumber: 2,
+      title: 'Seguimiento de rebuilds',
+      description:
+          'Al cambiar un solo número se reconstruye toda la pantalla, incluso partes que no cambian',
+      problematico: _usarCaminoProblematico,
+      onPathChanged: (valor) =>
+          setState(() => _usarCaminoProblematico = valor),
+      child: _usarCaminoProblematico
+          ? const _ConteoProblematico()
+          : const _ConteoOptimizado(),
     );
   }
 }
@@ -223,37 +209,4 @@ class _WidgetCostoso extends StatelessWidget {
   }
 }
 
-class _CaseDescription extends StatelessWidget {
-  const _CaseDescription();
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      color: AppColors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Seguimiento de rebuilds',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Al cambiar un solo número se reconstruye toda la pantalla, incluso partes que no cambian',
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: AppColors.black.withValues(alpha: 0.6),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

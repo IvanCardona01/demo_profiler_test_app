@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
-import '../widgets/path_switch.dart';
+import '../widgets/case_scaffold.dart';
 
 /// Caso 4: Memoria creciente.
 ///
@@ -65,91 +65,44 @@ class _CaseFourScreenState extends State<CaseFourScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.white,
-        title: const Text('Caso 4'),
-        actions: [
-          PathSwitch(
-            problematico: _usarCaminoProblematico,
-            onChanged: (valor) =>
-                setState(() => _usarCaminoProblematico = valor),
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _CaseDescription(),
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Visita número',
-                    style: TextStyle(fontSize: 14, color: AppColors.black),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '$_visit',
-                    style: const TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '${_probe.payload.length} datos retenidos en esta visita',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.black.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
+    return CaseScaffold(
+      caseNumber: 4,
+      title: 'Memoria creciente',
+      description:
+          'Cada vez que entras y sales de la pantalla la app ocupa más memoria y nunca la devuelve',
+      problematico: _usarCaminoProblematico,
+      onPathChanged: (valor) =>
+          setState(() => _usarCaminoProblematico = valor),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Visita número',
+              style: TextStyle(fontSize: 14, color: AppColors.black),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '$_visit',
+              style: const TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primary,
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Text(
+              '${_probe.payload.length} datos retenidos en esta visita',
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.black.withValues(alpha: 0.6),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _CaseDescription extends StatelessWidget {
-  const _CaseDescription();
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      color: AppColors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Memoria creciente',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Cada vez que entras y sales de la pantalla la app ocupa más memoria y nunca la devuelve',
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: AppColors.black.withValues(alpha: 0.6),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
