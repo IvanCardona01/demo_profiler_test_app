@@ -1,23 +1,21 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 import '../widgets/path_switch.dart';
 
-/// Caso 2: Interacción costosa.
+/// Caso 2: Seguimiento de rebuilds.
 ///
-/// Sintoma: Al presionar el botón la pantalla se congela, el indicador de carga
-/// no gira y no se puede interactuar hasta que termina el cálculo.
+/// Sintoma: Al presionar el botón que incrementa el contador, toda la pantalla
+/// parpadea o se siente pesada, aunque solo cambia un número.
 ///
-/// Diagnostico: El trabajo pesado se ejecuta de forma síncrona en el hilo de UI
-/// dentro del onPressed, bloqueando el frame y toda la interacción mientras
-/// dura el cálculo.
+/// Diagnostico: El setState está en lo alto del árbol, así que al cambiar el
+/// contador se reconstruyen todos los widgets de la pantalla, incluidos los
+/// costosos que no dependen del contador.
 ///
-/// Cómo se soluciona: mover el trabajo pesado fuera del hilo de UI con un
-/// Isolate (compute), de modo que la interfaz siga respondiendo mientras el
-/// cálculo ocurre en segundo plano.
+/// Cómo se soluciona: aislar el estado que cambia en su propio widget, para que
+/// solo se reconstruya esa parte y los widgets costosos se queden quietos.
 class CaseTwoScreen extends StatefulWidget {
   const CaseTwoScreen({super.key});
 
@@ -28,9 +26,6 @@ class CaseTwoScreen extends StatefulWidget {
 class _CaseTwoScreenState extends State<CaseTwoScreen> {
   
   bool _usarCaminoProblematico = true;
-
-  bool _cargando = false;
-  double _resultado = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -53,78 +48,179 @@ class _CaseTwoScreenState extends State<CaseTwoScreen> {
         children: [
           const _CaseDescription(),
           Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(color: AppColors.primary),
-                  const SizedBox(height: 32),
-                  Text(
-                    'Resultado: ${_resultado.toStringAsFixed(2)} + ${Random().nextInt(100)}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
-                    ),
-                    onPressed: _cargando
-                        ? null
-                        : (_usarCaminoProblematico
-                            ? _interaccionProblematica
-                            : _interaccionOptimizada),
-                    child: Text(
-                      _cargando ? 'Procesando...' : 'Ejecutar cálculo',
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: _usarCaminoProblematico
+                ? const _ConteoProblematico()
+                : const _ConteoOptimizado(),
           ),
         ],
       ),
     );
   }
+}
 
-  /// Camino problemático: ejecuta el cálculo pesado de forma síncrona en el
-  /// hilo de UI, congelando la pantalla hasta que termina.
-  void _interaccionProblematica() {
-    setState(() => _cargando = true);
-    final resultado = _calculoPesado(50000000);
-    setState(() {
-      _resultado = resultado;
-      _cargando = false;
-    });
-  }
+/// Camino problemático: el contador vive en el State de todo el bloque, así que
+/// al llamar setState se reconstruye también el widget costoso que no cambia.
+class _ConteoProblematico extends StatefulWidget {
+  const _ConteoProblematico();
 
-  /// Camino optimizado: ejecuta el cálculo pesado en un Isolate con compute,
-  /// manteniendo la UI fluida mientras se procesa en segundo plano.
-  Future<void> _interaccionOptimizada() async {
-    setState(() => _cargando = true);
-    final resultado = await compute(_calculoPesado, 50000000);
-    setState(() {
-      _resultado = resultado;
-      _cargando = false;
-    });
+  @override
+  State<_ConteoProblematico> createState() => _ConteoProblematicoState();
+}
+
+class _ConteoProblematicoState extends State<_ConteoProblematico> {
+  int _contador = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    
+    return _Layout(
+      contador: _contador,
+      costoso: _WidgetCostoso(),
+      onIncrementar: () => setState(() => _contador++),
+    );
   }
 }
 
-/// Operación matemática pesada que simula una interacción costosa.
-double _calculoPesado(int iteraciones) {
-  var result = 0.0;
-  for (var i = 1; i < iteraciones; i++) {
-    result += sqrt(i * 1.0) * sin(i.toDouble());
+/// Camino optimizado: el estado del contador se aísla en _ContadorAislado y el
+/// widget costoso se crea una sola vez, así no se reconstruye al incrementar.
+class _ConteoOptimizado extends StatefulWidget {
+  const _ConteoOptimizado();
+
+  @override
+  State<_ConteoOptimizado> createState() => _ConteoOptimizadoState();
+}
+
+class _ConteoOptimizadoState extends State<_ConteoOptimizado> {
+
+  @override
+  Widget build(BuildContext context) {
+    return _Layout(
+      costoso: const _WidgetCostoso(),
+      contadorAislado: const _ContadorAislado(),
+    );
   }
-  return result;
+}
+
+class _Layout extends StatelessWidget {
+  final int? contador;
+  final Widget costoso;
+  final VoidCallback? onIncrementar;
+  final Widget? contadorAislado;
+
+  const _Layout({
+    required this.costoso,
+    this.contador,
+    this.onIncrementar,
+    this.contadorAislado,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          costoso,
+          const SizedBox(height: 32),
+          contadorAislado ?? _ContadorView(valor: contador ?? 0),
+          const SizedBox(height: 24),
+          if (onIncrementar != null)
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
+              ),
+              onPressed: onIncrementar,
+              child: const Text('Incrementar'),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContadorAislado extends StatefulWidget {
+  const _ContadorAislado();
+
+  @override
+  State<_ContadorAislado> createState() => _ContadorAisladoState();
+}
+
+class _ContadorAisladoState extends State<_ContadorAislado> {
+  int _contador = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _ContadorView(valor: _contador),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          ),
+          onPressed: () => setState(() => _contador++),
+          child: const Text('Incrementar'),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContadorView extends StatelessWidget {
+  final int valor;
+
+  const _ContadorView({required this.valor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '$valor',
+      style: const TextStyle(
+        fontSize: 48,
+        fontWeight: FontWeight.w800,
+        color: AppColors.primary,
+      ),
+    );
+  }
+}
+
+/// Widget costoso que no depende del contador. Si se reconstruye en cada
+/// incremento, es la señal del problema
+class _WidgetCostoso extends StatelessWidget {
+  
+  const _WidgetCostoso();
+
+  @override
+  Widget build(BuildContext context) {
+    
+    var acumulado = Random().nextInt(1000);
+    for (var i = 0; i < 2000000; i++) {
+      acumulado += i % 7;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(
+        'Widget costoso (marca $acumulado)',
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          color: AppColors.black,
+        ),
+      ),
+    );
+  }
 }
 
 class _CaseDescription extends StatelessWidget {
@@ -140,7 +236,7 @@ class _CaseDescription extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Interacción costosa',
+            'Seguimiento de rebuilds',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -149,7 +245,7 @@ class _CaseDescription extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'La pantalla se congela al presionar el botón porque el cálculo corre en el hilo de UI',
+            'Al cambiar un solo número se reconstruye toda la pantalla, incluso partes que no cambian',
             style: TextStyle(
               fontSize: 13,
               height: 1.4,

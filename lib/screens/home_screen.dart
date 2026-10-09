@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:profiler_app/screens/case_four_screen.dart';
 
 import '../models/profiler_case.dart';
 import '../theme/app_colors.dart';
 import '../widgets/case_card.dart';
 import 'case_one_screen.dart';
-import 'case_three_screen.dart';
 import 'case_two_screen.dart';
+import 'case_three_screen.dart';
+import 'case_four_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

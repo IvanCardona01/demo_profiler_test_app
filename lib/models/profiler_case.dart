@@ -12,11 +12,11 @@ const List<ProfilerCase> profilerCases = [
   ),
   ProfilerCase(
     title: 'Caso 2',
-    description: 'Interacción costosa',
+    description: 'Seguimiento de rebuilds',
   ),
   ProfilerCase(
     title: 'Caso 3',
-    description: 'Seguimiento de rebuilds',
+    description: 'Interacción costosa',
   ),
   ProfilerCase(
     title: 'Caso 4',
